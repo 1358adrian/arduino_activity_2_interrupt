@@ -121,6 +121,7 @@ void buttonOverrideManualMode() {
     if ((digitalRead(buttonPin) == LOW) && buttonReleaseMem = true) return;
     if (digitalRead(buttonPin) == LOW && buttonReleaseMem = false) { // First press
       if (millis() - getMillisHere >= 1000) {
+        manualMode = false;
         manualExitFlag = true;
         return;
       }
@@ -135,6 +136,7 @@ void buttonOverrideManualMode() {
     if ((digitalRead(buttonPin) == LOW) && buttonReleaseMem = false) return;
     if (digitalRead(buttonPin) == LOW && buttonReleaseMem = true) { // First press
       if (millis() - getMillisHere >= 1000) {
+        manualMode = false;
         manualExitFlag = true;
         return;
       }
@@ -147,10 +149,13 @@ void buttonOverrideManualMode() {
 void waitFor(unsigned long duration) {
   unsigned long startTime = millis();
   while (millis() - startTime < duration) {
-    if (digitalRead(buttonPin) == LOW && manualMode == false) {
+    if (digitalRead(buttonPin) == LOW && manualMode == false && manualExitFlag == false) {
       manualMode = true;
       return;
     }
+    if (digitalRead(buttonPin) == LOW && manualExitFlag == true) continue;
+    if (digitalRead(buttonPin) == HIGH) manualExitFlag = false;
+
     if (emergencyMode) return; // if emergencyISR() was triggered here in this loop
   }
 }
