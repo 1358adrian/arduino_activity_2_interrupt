@@ -115,7 +115,33 @@ bool manualMode = false;
 bool manualExitFlag = false;
 
 void buttonOverrideManualMode() {
-  
+  unsigned long int getMillisHere = millis();
+  while ((digitalRead(buttonPin) == LOW && buttonReleaseMem = false) || (digitalRead(buttonPin) == HIGH && buttonReleaseMem = true)) {
+    if (digitalRead(buttonPin) == HIGH) buttonReleaseMem = true;
+    if ((digitalRead(buttonPin) == LOW) && buttonReleaseMem = true) return;
+    if (digitalRead(buttonPin) == LOW && buttonReleaseMem = false) { // First press
+      if (millis() - getMillisHere >= 1000) {
+        manualExitFlag = true;
+        return;
+      }
+    }
+    
+    if (emergencyMode) return; // if emergencyISR() was triggered here in this loop
+  }
+
+  getMillisHere = millis();
+  while ((digitalRead(buttonPin) == LOW && buttonReleaseMem = true) || (digitalRead(buttonPin) == HIGH && buttonReleaseMem = false)) {
+    if (digitalRead(buttonPin) == HIGH) buttonReleaseMem = false;
+    if ((digitalRead(buttonPin) == LOW) && buttonReleaseMem = false) return;
+    if (digitalRead(buttonPin) == LOW && buttonReleaseMem = true) { // First press
+      if (millis() - getMillisHere >= 1000) {
+        manualExitFlag = true;
+        return;
+      }
+    }
+    
+    if (emergencyMode) return; // if emergencyISR() was triggered here in this loop
+  }
 }
 
 void waitFor(unsigned long duration) {
@@ -136,7 +162,7 @@ void lightSequence() {
   digitalWrite(latchPin, HIGH); // Enable the latch to update the LEDs
   while (true) {
     serialPrintLdrAndPot();
-    if (emergencyMode) return; // if emergencyISR() was triggered here in this loop `lightSequence()` `while (true)`
+    if (emergencyMode) return; // if emergencyISR() was triggered here in this loop
 
     int ldrValue = analogRead(ldrPin);
     if (ldrValue < threshold) return; // Return to redLightBlink(); see void loop()
@@ -152,19 +178,21 @@ void lightSequence() {
     int delayTime = map(potValue, 0, 1023, minValDelay, maxValDelay);
     Serial.println("Green Light ON");
     digitalWrite(greenPin, HIGH);
-    waitFor(delayTime);
+    (manualMode == false) ? waitFor(1000) : buttonOverrideManualMode();
     digitalWrite(greenPin, LOW);
     Serial.println("Green Light OFF");
 
+    if (emergencyMode) return; // if emergencyISR() was triggered here in this loop
     Serial.println("Yellow Light ON");
     digitalWrite(yellowPin, HIGH);
     (manualMode == false) ? waitFor(1000) : buttonOverrideManualMode();
     digitalWrite(yellowPin, LOW);
     Serial.println("Yellow Light OFF");
 
+    if (emergencyMode) return; // if emergencyISR() was triggered here in this loop
     Serial.println("Red Light ON");
     digitalWrite(redPin, HIGH);
-    waitFor(delayTime);
+    (manualMode == false) ? waitFor(1000) : buttonOverrideManualMode();
     digitalWrite(redPin, LOW);
     Serial.println("Red Light OFF");
   }
