@@ -117,7 +117,10 @@ bool manualExitFlag = false;
 void buttonOverrideManualMode() {
   unsigned long int getMillisHere = millis();
   while ((digitalRead(buttonPin) == LOW && buttonReleaseMem == false) || (digitalRead(buttonPin) == HIGH && buttonReleaseMem == true)) {
-    if (digitalRead(buttonPin) == HIGH) buttonReleaseMem = true;
+    if (digitalRead(buttonPin) == HIGH && buttonReleaseMem == false) {
+      buttonReleaseMem = true;
+      continue;
+    }
     if ((digitalRead(buttonPin) == LOW) && buttonReleaseMem == true) return;
     if (digitalRead(buttonPin) == LOW && buttonReleaseMem == false) { // First press
       if (millis() - getMillisHere >= 1000) {
@@ -132,7 +135,10 @@ void buttonOverrideManualMode() {
 
   getMillisHere = millis();
   while ((digitalRead(buttonPin) == LOW && buttonReleaseMem == true) || (digitalRead(buttonPin) == HIGH && buttonReleaseMem == false)) {
-    if (digitalRead(buttonPin) == HIGH) buttonReleaseMem = false;
+    if (digitalRead(buttonPin) == HIGH && buttonReleaseMem == true) {
+      buttonReleaseMem = false;
+      continue;
+    }
     if ((digitalRead(buttonPin) == LOW) && buttonReleaseMem == false) return;
     if (digitalRead(buttonPin) == LOW && buttonReleaseMem == true) { // First press
       if (millis() - getMillisHere >= 1000) {
