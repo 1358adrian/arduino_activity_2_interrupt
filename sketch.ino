@@ -153,9 +153,11 @@ void waitFor(unsigned long duration) {
       manualMode = true;
       return;
     }
-    if (digitalRead(buttonPin) == LOW && manualExitFlag == true) continue;
-    if (digitalRead(buttonPin) == HIGH) manualExitFlag = false;
-
+    if (digitalRead(buttonPin) == LOW && manualMode == false && manualExitFlag == true) continue;
+    if (digitalRead(buttonPin) == HIGH && manualMode == false && manualExitFlag == true) {
+      manualExitFlag = false;
+      continue;
+    }
     if (emergencyMode) return; // if emergencyISR() was triggered here in this loop
   }
 }
