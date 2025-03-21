@@ -114,8 +114,10 @@ bool buttonReleaseMem = false;
 bool manualMode = false;
 bool manualExitFlag = false;
 
+unsigned long int getMillisHere;
+
 void buttonOverrideManualMode() {
-  unsigned long int getMillisHere = millis();
+  getMillisHere = millis();
   while ((digitalRead(buttonPin) == LOW && buttonReleaseMem == false) || (digitalRead(buttonPin) == HIGH && buttonReleaseMem == true)) {
     if (digitalRead(buttonPin) == HIGH && buttonReleaseMem == false) {
       buttonReleaseMem = true;
@@ -191,7 +193,7 @@ void lightSequence() {
     int delayTime = map(potValue, 0, 1023, minValDelay, maxValDelay);
     Serial.println("Green Light ON");
     digitalWrite(greenPin, HIGH);
-    (manualMode == false) ? waitFor(1000) : buttonOverrideManualMode();
+    (manualMode == false) ? waitFor(delayTime) : buttonOverrideManualMode();
     digitalWrite(greenPin, LOW);
     Serial.println("Green Light OFF");
 
@@ -205,7 +207,7 @@ void lightSequence() {
     if (emergencyMode) return; // if emergencyISR() was triggered here in this loop
     Serial.println("Red Light ON");
     digitalWrite(redPin, HIGH);
-    (manualMode == false) ? waitFor(1000) : buttonOverrideManualMode();
+    (manualMode == false) ? waitFor(delayTime) : buttonOverrideManualMode();
     digitalWrite(redPin, LOW);
     Serial.println("Red Light OFF");
   }
