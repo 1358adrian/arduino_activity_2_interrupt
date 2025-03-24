@@ -88,6 +88,7 @@ void emergencyISR() {
 }
 
 void emergencyBlink() {
+  bool emergencyFlag = false;
   while (millis() - emergencyStartTime < 60000) { // Blink for 1 minute
     count++;
     getMillisEmergency = millis();
@@ -95,15 +96,22 @@ void emergencyBlink() {
       digitalWrite(redPin, HIGH);
       displayCount(count);
       if((millis() - getMillisEmergency) >= 250) break;
+      if (digitalRead(buttonPin) == HIGH) emergencyFlag = true;
+      if (digitalRead(buttonPin) == LOW && emergencyFlag == true) break;
     }
+    if (digitalRead(buttonPin) == LOW && emergencyFlag == true) break;
     getMillisEmergency = millis();
     while(true) {
       digitalWrite(redPin, LOW);
       displayCount(count);
       if((millis() - getMillisEmergency) >= 250) break;
+      if (digitalRead(buttonPin) == HIGH) emergencyFlag = true;
+      if (digitalRead(buttonPin) == LOW && emergencyFlag == true) break;
     }
+    if (digitalRead(buttonPin) == LOW && emergencyFlag == true) break;
   }
   emergencyMode = false;
+  emergencyFlag = false;
   digitalWrite(latchPin, LOW);  // Disable the latch to prevent updates
   shiftOut(dataPin, clockPin, MSBFIRST, 0b00000000);
   digitalWrite(latchPin, HIGH); // Enable the latch to update the LEDs
