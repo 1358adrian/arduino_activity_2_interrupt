@@ -10,11 +10,11 @@ const int rgbPin = 6;
 
 const int minValDelay = 0;
 const int maxValDelay = 10230;
-const int minValRgb = 50;  // Adjust this value as needed; 50 recommended
-const int maxValRgb = 600;   // Adjust this value as needed; 600 recommended
+const int minValRgb = 100;  // Adjust this value as needed; 50 recommended
+const int maxValRgb = 800;   // Adjust this value as needed; 600 recommended
 
 // Threshold value for light level
-int threshold = 500;  // Adjust this value as needed; 500 recommended
+int threshold = 700;  // Adjust this value as needed; 500 recommended
 
 unsigned long previousMillis = 0;
 bool redLedState = LOW;  // Initial state of the LED (LOW)
@@ -110,6 +110,7 @@ void emergencyBlink() {
     }
     if (digitalRead(buttonPin) == LOW && emergencyFlag == true) break;
   }
+  count = 0;
   emergencyMode = false;
   emergencyFlag = false;
   digitalWrite(latchPin, LOW);  // Disable the latch to prevent updates
